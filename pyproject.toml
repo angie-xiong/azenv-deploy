@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "azenv-deploy"
+version = "0.1.0"
+description = ""
+authors = ["angiexiong <363068948@qq.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pulumi = "^3.152.0"
+pulumi-azure-native = "^2.88.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
