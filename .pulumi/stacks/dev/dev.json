@@ -1,0 +1,20 @@
+{
+    "version": 3,
+    "checkpoint": {
+        "Stack": "organization/dev/dev",
+        "Latest": {
+            "manifest": {
+                "time": "2025-02-24T21:50:22.235411Z",
+                "magic": "e6f9b63eec1c02224f3d9bb9346dbfaeb256b3b4d71dc3ee7581d37b584369c2",
+                "version": "v3.152.0"
+            },
+            "secrets_providers": {
+                "type": "passphrase",
+                "state": {
+                    "salt": "v1:vDB9gMHira0=:v1:BN7AUpFGvH3nRSM3:+LBWJiHSrc3vwILNNLMuGU4Zn/WeOQ=="
+                }
+            },
+            "metadata": {}
+        }
+    }
+}
