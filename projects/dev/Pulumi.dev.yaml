@@ -1,3 +1,30 @@
 encryptionsalt: v1:vDB9gMHira0=:v1:BN7AUpFGvH3nRSM3:+LBWJiHSrc3vwILNNLMuGU4Zn/WeOQ==
 config:
-  azure-native:location: eastus
+  dev:prefix: axtest01
+  dev:enable_private_endpoints: "false"
+  dev:common:
+    dns_resource_group_name: aiadhub-dev-eastus-cloudsvc
+    resource_group_name: "rgn"
+    vnet_resource_group_name: "vrgn"
+    vnet_name: "vn"
+    private_endpoint_subnet_name: "pesn"
+  dev:azureml:
+    compute_instance_subnet_name: "cisn"
+    compute_cluster_subnet_name: "ccsn"
+    compute_cluster_config:
+      comp-cluster-01:
+        max_node_count: 5
+        min_node_count: 1
+        # Duration in ISO 8601 format: https://en.wikipedia.org/wiki/ISO_8601#Durations
+        # e.g. PTxM (mins) PTxH (hours)
+        node_idle_time_before_scale_down: PT5M
+        vm_priority: LowPriority
+        vm_size: Standard_DS11_v2
+    compute_instance_config:
+      comp-inst-ax01:
+        auto_pause:
+          delay_in_minutes: 50
+          enabled: true
+        user_email: angie.xiong0627@gmail.com
+        vm_size: Standard_DS12_v2
+

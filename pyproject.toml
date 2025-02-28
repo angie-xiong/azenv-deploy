@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.12"
 pulumi = "^3.152.0"
 pulumi-azure-native = "^2.88.0"
+pydantic = "^2.10.6"
 
 
 [build-system]
