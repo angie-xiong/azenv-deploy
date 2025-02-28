@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, Optional, List, Input, Field
 from constants import STANDARD_DS11_V2
+from pydantic import field_validator, BaseModel, Field
 
 @dataclass
 class AutoPauseConfig:
@@ -16,19 +17,35 @@ class AutoPauseConfig:
 @dataclass
 class ComputeInstanceConfigItem:
     user_email: str
-    # NOTE: I am using pydantic.Field here rather than dataclasses.field. This is because
+    # NOTE: Using pydantic.Field here rather than dataclasses.field. This is because
     # errors were reported when using dataclasses.field.
-    #
-    # This class is used as a parameter type for parameter compute_instance_config
-    # which in Pydantic class AzureMlYamlConfig. It's also used as a parameter type in
-    # dataclasses.dataclass AzureMlArgs. It appears that the pydantic class doesn't play well with
-    # dataclasses.field
     vm_size: str = Field(default=STANDARD_DS11_V2)
     auto_pause: AutoPauseConfig = Field(default_factory=AutoPauseConfig)
 
 @dataclass
 class ComputeClusterConfigItem:
-    pass
+    # pylint: disable=too-few-public-methods,line-too-long
+    """
+    Class for Compute Cluster Config
+
+    See https://docs.microsoft.com/en-us/azure/templates/microsoft.machinelearningservices/2021-03-01-preview/workspaces/computes?tabs=bicep#scalesettings
+    """
+    max_node_count: int
+    min_node_count: int
+    node_idle_time_before_scale_down: str
+    vm_priority: str
+    vm_size: str
+
+    @field_validator("vm_size")
+    @classmethod
+    def validate_vm_size_not_empty(cls, value): # pylint: disable=no-self-argument
+        """Validate that vm_size is not empty"""
+        if not value or value.strip() == "":
+            raise ValueError("vm_size in compute cluster can't be empty.")
+        return value
+
+    def __getitem__(self, key):
+        return getattr(self,key)
 
 @dataclass
 class AzureMLConfig:
