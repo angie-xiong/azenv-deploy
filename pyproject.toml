@@ -12,6 +12,12 @@ pulumi-azure-native = "^2.88.0"
 pydantic = "^2.10.6"
 
 
+[tool.poetry.group.dev.dependencies]
+pylint = "^3.3.5"
+pytest = "^8.3.5"
+coverage = "^7.7.0"
+pyright = "^1.1.397"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

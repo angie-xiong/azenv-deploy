@@ -23,8 +23,7 @@ config:
     compute_instance_config:
       comp-inst-ax01:
         auto_pause:
-          delay_in_minutes: 50
+          delay_in_minutes: 20
           enabled: true
         user_email: angie.xiong0627@gmail.com
         vm_size: Standard_DS12_v2
-
