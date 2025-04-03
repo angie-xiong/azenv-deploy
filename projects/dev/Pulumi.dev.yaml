@@ -1,7 +1,7 @@
 encryptionsalt: v1:vDB9gMHira0=:v1:BN7AUpFGvH3nRSM3:+LBWJiHSrc3vwILNNLMuGU4Zn/WeOQ==
 config:
   dev:prefix: axtest01
-  dev:enable_private_endpoints: "false"
+  dev:enable_private_endpoint: "false"
   dev:common:
     dns_resource_group_name: aiadhub-dev-eastus-cloudsvc
     resource_group_name: "rgn"

@@ -7,7 +7,13 @@ from typing import Dict, Optional
 from pydantic import field_validator, Field, BaseModel
 from pulumi import Input, ComponentResource, ResourceOptions
 from pulumi_azure_native import network
-from .constants import STANDARD_DS11_V2
+from .constants import (
+    STANDARD_DS11_V2,
+    PRIVATE_DNS_ZONE_STORAGE_FILE,
+    PRIVATE_DNS_ZONE_STORAGE_BLOB,
+    PRIVATE_DNS_ZONE_STORAGE_DFS
+)
+from .storage import PrivateDnsZoneAndGroupIdItem, Storage
 
 
 @dataclass
@@ -54,6 +60,15 @@ class ComputeClusterItem:
     def __getitem__(self, key):
         return getattr(self,key)
 
+class AzureMLYamlConfig(BaseModel):
+    """
+    Class represents the configuration for AzureML component in the Pulumi YAML config file.
+    """
+    compute_instance_subnet_name: Optional[str] = None
+    compute_cluster_subnet_name: Optional[str] = None
+    compute_instance_config: Dict[str, ComputeInstanceItem] = Field(default_factory=dict)
+    compute_cluster_config: Dict[str, ComputeClusterItem] = Field(default_factory=dict)
+
 @dataclass
 class AzureMLArgs:
     """This class represents the AzureML component configuration in the Pulumi YAML config file"""
@@ -62,11 +77,11 @@ class AzureMLArgs:
     compute_instance_subnet_name: Optional[Input[str]]
     compute_cluster_subnet_name: Optional[Input[str]]
 
-    # if enable_private_endpoints is `true`, then pe subnet name and dns
+    # if enable_private_endpoint is `true`, then pe subnet name and dns
     # resource group shouldn't be empty.
     vnet_resource_group_name: Input[str]
     vnet_name: Input[str]
-    enable_private_endpoints: Input[bool] = False
+    enable_private_endpoint: Input[bool] = False
     dns_resource_group_name: Input[str] = ""
 
     private_endpoint_subnet_name: Input[str] = ""
@@ -75,16 +90,6 @@ class AzureMLArgs:
         default_factory=dict)
     compute_cluster_config: Dict[str, ComputeClusterItem] = Field(
         default_factory=dict)
-
-class AzureMLYamlConfig(BaseModel):
-    """
-    Class represents the configuration for AzureML component in the Pulumi YAML config file.
-    """
-    compute_instance_subnet_name: Optional[str] = None
-    compute_cluster_subnet_name: Optional[str] = None
-    data_landing_subnet_name: Optional[str] = None
-    compute_instance_config: Dict[str, ComputeInstanceItem] = Field(default_factory=dict)
-    compute_cluster_config: Dict[str, ComputeClusterItem] = Field(default_factory=dict)
 
 class AzureML(ComponentResource):
     """Pulumi Component for Azure ML Workspace and associated resources"""
@@ -110,10 +115,54 @@ class AzureML(ComponentResource):
             ).id
 
         # TODO - 2. Create a Storage Account
+        storage_name = f"{name}stg"
+        private_dns_zones_and_group_ids = None
+        if args.enable_private_endpoint:
+            private_dns_zones_and_group_ids = [
+                PrivateDnsZoneAndGroupIdItem(
+                    dns_zone=PRIVATE_DNS_ZONE_STORAGE_FILE,
+                    group_id="file"
+                ),
+                PrivateDnsZoneAndGroupIdItem(
+                    dns_zone=PRIVATE_DNS_ZONE_STORAGE_BLOB,
+                    group_id="blob"
+                ),
+                PrivateDnsZoneAndGroupIdItem(
+                    dns_zone=PRIVATE_DNS_ZONE_STORAGE_DFS,
+                    group_id="dfs"
+                )
+            ]
+        self.storage_account = Storage(
+            name=storage_name,
+            args=StorageArgs(
+                resource_group_name=args.resource_group_name,
+                enable_private_endpoint=args.enable_private_endpoint,
+                subnet_id=management_subnet_id,
+                dns_resource_group_name=args.dns_resource_group_name,
+                private_dns_zones_and_group_ids=private_dns_zones_and_group_ids,
+                logging_workspace_id=args.logging_workspace_id,
+                tags=PEA_TAG
+            ),
+            opts=child_opts
+        )
 
         # TODO - 3. Create extra DNS record sets to link the endpoints with the
         # private dns zone in Spoke.
-
+        if args.enable_private_endpoint:
+            for item in private_dns_zones_and_group_ids:
+                # pylint: disable=line-too-long
+                private_ipv4_address = self.storage_account.private_ip_addresses[item.dns_zone]
+                network.PrivateRecordSet(f"{storage_name}-{item.group_id}-rs",
+                    a_records=[network.ARecordArgs(
+                        ipv4_address=private_ipv4_address
+                    )],
+                    record_type="A",
+                    relative_record_set_name=self.storage_account.resource_name,
+                    resource_group_name=args.resource_group_name,
+                    ttl=3600,
+                    private_zone_name=item.dns_zone,
+                    opts=ResourceOptions(parent=self, depends_on=[self.storage_account])
+                )
         # TODO - 4. Create a Azure Container Registry
         # 5. Create a Keyvault
         # TODO - 6. Create a Application Insights Component
