@@ -41,7 +41,5 @@ jobs:
     - name: Install dependencies
       run: |
         poetry install
-
-      # Test, build, publish
     - name: Run tests
       run: .github/scripts/tests.sh
