@@ -1,0 +1,43 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+
+name: AzEnv application
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - 'docs/**'
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install Shellcheck
+      run: |
+        sudo -S apt-get install --yes shellcheck
+    - name: Shellcheck
+      run: |
+        shellcheck scripts/setup_env.sh
+        shellcheck .github/scripts/test.sh
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: 2.1.1
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+    - name: Set Node.js 20.x
+      uses: actions/setup-node@v4.1.0
+      with:
+        node-version: 20.x
+      # Test, build, publish
+    - name: Run tests
+      run: .github/scripts/tests.sh
