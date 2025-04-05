@@ -27,7 +27,7 @@ jobs:
     - name: Shellcheck
       run: |
         shellcheck scripts/setup_env.sh
-        shellcheck .github/scripts/test.sh
+        shellcheck .github/scripts/tests.sh
     - name: Install Poetry
       uses: snok/install-poetry@v1
       with:
