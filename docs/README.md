@@ -1,5 +1,5 @@
 1. Set up running environment
-In your Terminal, please run the [`setup_env.sh`](../scripts/setup_env.sh)
+In your Terminal, please run the [`./scripts/setup_env.sh`](../scripts/setup_env.sh)
 
 2. Create and preview a pulumi stack
 In your Terminal,
