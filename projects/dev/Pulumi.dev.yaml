@@ -15,8 +15,6 @@ config:
       comp-cluster-01:
         max_node_count: 5
         min_node_count: 1
-        # Duration in ISO 8601 format: https://en.wikipedia.org/wiki/ISO_8601#Durations
-        # e.g. PTxM (mins) PTxH (hours)
         node_idle_time_before_scale_down: PT5M
         vm_priority: LowPriority
         vm_size: Standard_DS11_v2

@@ -1,12 +1,12 @@
 """Configuration of the project"""
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Optional
 import re
 import pulumi
 from azenv_deploy.azenv_deploy import azureml
 
 @dataclass
-class CommonArgs:
+class CommonArgs: # pylint: disable=too-few-public-methods
     """Class for storing common arguments from the stack configuration file."""
     dns_resource_group_name: str
     resource_group_name: str
@@ -14,7 +14,7 @@ class CommonArgs:
     vnet_name: str
     private_endpoint_subnet_name: str
 
-class AzEnvConfig:
+class AzEnvConfig: # pylint: disable=too-few-public-methods
     """Turning the pulumi configuration file into objects."""
     def __init__(self):
         config = pulumi.Config()

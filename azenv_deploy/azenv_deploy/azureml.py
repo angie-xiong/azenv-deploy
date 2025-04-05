@@ -6,14 +6,14 @@ from dataclasses import dataclass, asdict
 from typing import Dict, Optional
 from pydantic import field_validator, Field, BaseModel
 from pulumi import Input, ComponentResource, ResourceOptions
-from pulumi_azure_native import network
+# from pulumi_azure_native import network
 from .constants import (
     STANDARD_DS11_V2,
-    PRIVATE_DNS_ZONE_STORAGE_FILE,
-    PRIVATE_DNS_ZONE_STORAGE_BLOB,
-    PRIVATE_DNS_ZONE_STORAGE_DFS
+    # PRIVATE_DNS_ZONE_STORAGE_FILE,
+    # PRIVATE_DNS_ZONE_STORAGE_BLOB,
+    # PRIVATE_DNS_ZONE_STORAGE_DFS
 )
-from .storage import PrivateDnsZoneAndGroupIdItem, Storage
+# from .storage import PrivateDnsZoneAndGroupIdItem, Storage, StorageArgs
 
 
 @dataclass
@@ -99,74 +99,75 @@ class AzureML(ComponentResource):
         args: AzureMLArgs,
         opts: Optional[ResourceOptions] = None
     ):
-        child_opts = ResourceOptions(parent=self)
+        # child_opts = ResourceOptions(parent=self)
         super().__init__("azenv_deploy:azureml:AzureML",
                          f"{name}-comp",
                          # Register the arguments for the creation of resources in pulumi stack.
                          asdict(args),
                          opts)
-        
         # 1. Get the subnet id of the subnet that is used by private endpoints.
-        if args.private_endpoint_subnet_name:
-            pe_subnet_id = network.get_subnet_output(
-                resource_group_name=args.vnet_resource_group_name,
-                virtual_network_name=args.vnet_name,
-                subnet_name=args.private_endpoint_subnet_name
-            ).id
+        # pe_subnet_id = None
+        # if args.private_endpoint_subnet_name:
+        #     pe_subnet_id = network.get_subnet_output(
+        #         resource_group_name=args.vnet_resource_group_name,
+        #         virtual_network_name=args.vnet_name,
+        #         subnet_name=args.private_endpoint_subnet_name
+        #     ).id
 
-        # TODO - 2. Create a Storage Account
-        storage_name = f"{name}stg"
-        private_dns_zones_and_group_ids = None
-        if args.enable_private_endpoint:
-            private_dns_zones_and_group_ids = [
-                PrivateDnsZoneAndGroupIdItem(
-                    dns_zone=PRIVATE_DNS_ZONE_STORAGE_FILE,
-                    group_id="file"
-                ),
-                PrivateDnsZoneAndGroupIdItem(
-                    dns_zone=PRIVATE_DNS_ZONE_STORAGE_BLOB,
-                    group_id="blob"
-                ),
-                PrivateDnsZoneAndGroupIdItem(
-                    dns_zone=PRIVATE_DNS_ZONE_STORAGE_DFS,
-                    group_id="dfs"
-                )
-            ]
-        self.storage_account = Storage(
-            name=storage_name,
-            args=StorageArgs(
-                resource_group_name=args.resource_group_name,
-                enable_private_endpoint=args.enable_private_endpoint,
-                subnet_id=management_subnet_id,
-                dns_resource_group_name=args.dns_resource_group_name,
-                private_dns_zones_and_group_ids=private_dns_zones_and_group_ids,
-                logging_workspace_id=args.logging_workspace_id,
-                tags=PEA_TAG
-            ),
-            opts=child_opts
-        )
+        # 2. Create a Storage Account
+        # storage_name = f"{name}stg"
+        # private_dns_zones_and_group_ids = None
+        # if args.enable_private_endpoint:
+        #     private_dns_zones_and_group_ids = [
+        #         PrivateDnsZoneAndGroupIdItem(
+        #             dns_zone=PRIVATE_DNS_ZONE_STORAGE_FILE,
+        #             group_id="file"
+        #         ),
+        #         PrivateDnsZoneAndGroupIdItem(
+        #             dns_zone=PRIVATE_DNS_ZONE_STORAGE_BLOB,
+        #             group_id="blob"
+        #         ),
+        #         PrivateDnsZoneAndGroupIdItem(
+        #             dns_zone=PRIVATE_DNS_ZONE_STORAGE_DFS,
+        #             group_id="dfs"
+        #         )
+        #     ]
+        # self.storage_account = Storage(
+        #     name=storage_name,
+        #     args=StorageArgs(
+        #         resource_group_name=args.resource_group_name,
+        #         enable_private_endpoint=args.enable_private_endpoint,
+        #         subnet_id=pe_subnet_id,
+        #         dns_resource_group_name=args.dns_resource_group_name,
+        #         private_dns_zones_and_group_ids=private_dns_zones_and_group_ids,
+        #         logging_workspace_id=args.logging_workspace_id,
+        #         tags=[]
+        #     ),
+        #     opts=child_opts
+        # )
 
-        # TODO - 3. Create extra DNS record sets to link the endpoints with the
+        # 3. Create extra DNS record sets to link the endpoints with the
         # private dns zone in Spoke.
-        if args.enable_private_endpoint:
-            for item in private_dns_zones_and_group_ids:
-                # pylint: disable=line-too-long
-                private_ipv4_address = self.storage_account.private_ip_addresses[item.dns_zone]
-                network.PrivateRecordSet(f"{storage_name}-{item.group_id}-rs",
-                    a_records=[network.ARecordArgs(
-                        ipv4_address=private_ipv4_address
-                    )],
-                    record_type="A",
-                    relative_record_set_name=self.storage_account.resource_name,
-                    resource_group_name=args.resource_group_name,
-                    ttl=3600,
-                    private_zone_name=item.dns_zone,
-                    opts=ResourceOptions(parent=self, depends_on=[self.storage_account])
-                )
-        # TODO - 4. Create a Azure Container Registry
+        # if args.enable_private_endpoint:
+        #     for item in private_dns_zones_and_group_ids:
+        #         # pylint: disable=line-too-long
+        #         private_ipv4_address = self.storage_account.private_ip_addresses[item.dns_zone]
+        #         network.PrivateRecordSet(f"{storage_name}-{item.group_id}-rs",
+        #             a_records=[network.ARecordArgs(
+        #                 ipv4_address=private_ipv4_address
+        #             )],
+        #             record_type="A",
+        #             relative_record_set_name=self.storage_account.resource_name,
+        #             resource_group_name=args.resource_group_name,
+        #             ttl=3600,
+        #             private_zone_name=item.dns_zone,
+        #             opts=ResourceOptions(parent=self, depends_on=[self.storage_account])
+        #         )
+
+        # 4. Create a Azure Container Registry
         # 5. Create a Keyvault
-        # TODO - 6. Create a Application Insights Component
-        # TODO - 7. Create a Azureml Workspace
-        # TODO - 8. Create private endpoints for AzureML workspace
-        # TODO - 9. Create compute clusters
-        # TODO - 10. Create compute instances
+        # 6. Create a Application Insights Component
+        # 7. Create a Azureml Workspace
+        # 8. Create private endpoints for AzureML workspace
+        # 9. Create compute clusters
+        # 10. Create compute instances
