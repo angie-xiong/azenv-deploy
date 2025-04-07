@@ -28,7 +28,7 @@
 #     logging_workspace_id: Input[str]
 
 #     tags: Dict[str, str]
-#     enable_private_endpoint: Input[bool] = False
+#     enable_private_endpoints: Input[bool] = False
 #     subnet_id: Input[str] = ''
 #     dns_resource_group_name: Input[str]= ''
 #     create_container: Input[bool] = False

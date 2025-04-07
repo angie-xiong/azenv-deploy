@@ -21,10 +21,10 @@ class AzEnvConfig: # pylint: disable=too-few-public-methods
         self.prefix = config.require("prefix")
         validate_prefix(self.prefix)
         self.common = CommonArgs(**config.require_object("common"))
-        enable_private_endpoint = config.get_bool("enable_private_endpoint", True)
-        if enable_private_endpoint:
+        enable_private_endpoints = config.get_bool("enable_private_endpoints", True)
+        if enable_private_endpoints:
             validate_private_endpoint_config(
-                enable_private_endpoint,
+                enable_private_endpoints,
                 self.common.private_endpoint_subnet_name,
                 self.common.dns_resource_group_name)
 
@@ -34,7 +34,7 @@ class AzEnvConfig: # pylint: disable=too-few-public-methods
             resource_group_name=self.common.resource_group_name,
             vnet_name=self.common.vnet_name,
             vnet_resource_group_name=self.common.vnet_resource_group_name,
-            enable_private_endpoint=enable_private_endpoint,
+            enable_private_endpoints=enable_private_endpoints,
             private_endpoint_subnet_name=self.common.private_endpoint_subnet_name,
             dns_resource_group_name=self.common.dns_resource_group_name,
             # Allow component args to override
@@ -62,7 +62,7 @@ def validate_prefix(prefix: str):
     return prefix
 
 def validate_private_endpoint_config(
-    enable_private_endpoint: bool,
+    enable_private_endpoints: bool,
     private_endpoint_subnet_name: Optional[str],
     dns_resource_group_name: Optional[str]
 ) -> None:
@@ -70,14 +70,14 @@ def validate_private_endpoint_config(
     Validate required parameters for creation of private endpoints.
 
     Attributes:
-    enable_private_endpoint (bool): Enabling private endpoints for resources or not.
+    enable_private_endpoints (bool): Enabling private endpoints for resources or not.
     private_endpoint_subnet_name (Optional[str]): Subnet name.
     dns_resource_group_name (Optional[str]): The resource group name of Private Dns zones.
 
     Returns:
         None
     """
-    if enable_private_endpoint:
+    if enable_private_endpoints:
         # pylint: disable=line-too-long
         if private_endpoint_subnet_name is None or private_endpoint_subnet_name.strip() == "" \
             or dns_resource_group_name is None or dns_resource_group_name.strip() == "":

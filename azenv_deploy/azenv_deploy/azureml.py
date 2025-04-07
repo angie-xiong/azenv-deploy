@@ -77,11 +77,11 @@ class AzureMLArgs:
     compute_instance_subnet_name: Optional[Input[str]]
     compute_cluster_subnet_name: Optional[Input[str]]
 
-    # if enable_private_endpoint is `true`, then pe subnet name and dns
+    # if enable_private_endpoints is `true`, then pe subnet name and dns
     # resource group shouldn't be empty.
     vnet_resource_group_name: Input[str]
     vnet_name: Input[str]
-    enable_private_endpoint: Input[bool] = False
+    enable_private_endpoints: Input[bool] = False
     dns_resource_group_name: Input[str] = ""
 
     private_endpoint_subnet_name: Input[str] = ""
@@ -117,7 +117,7 @@ class AzureML(ComponentResource):
         # 2. Create a Storage Account
         # storage_name = f"{name}stg"
         # private_dns_zones_and_group_ids = None
-        # if args.enable_private_endpoint:
+        # if args.enable_private_endpoints:
         #     private_dns_zones_and_group_ids = [
         #         PrivateDnsZoneAndGroupIdItem(
         #             dns_zone=PRIVATE_DNS_ZONE_STORAGE_FILE,
@@ -136,7 +136,7 @@ class AzureML(ComponentResource):
         #     name=storage_name,
         #     args=StorageArgs(
         #         resource_group_name=args.resource_group_name,
-        #         enable_private_endpoint=args.enable_private_endpoint,
+        #         enable_private_endpoints=args.enable_private_endpoints,
         #         subnet_id=pe_subnet_id,
         #         dns_resource_group_name=args.dns_resource_group_name,
         #         private_dns_zones_and_group_ids=private_dns_zones_and_group_ids,
@@ -148,7 +148,7 @@ class AzureML(ComponentResource):
 
         # 3. Create extra DNS record sets to link the endpoints with the
         # private dns zone in Spoke.
-        # if args.enable_private_endpoint:
+        # if args.enable_private_endpoints:
         #     for item in private_dns_zones_and_group_ids:
         #         # pylint: disable=line-too-long
         #         private_ipv4_address = self.storage_account.private_ip_addresses[item.dns_zone]

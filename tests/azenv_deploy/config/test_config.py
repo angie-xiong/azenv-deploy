@@ -43,7 +43,7 @@ def set_mocks(settings: Dict = None) -> None:
     )
 
 expected_prefix='test'
-expected_enable_private_endpoint="True"
+expected_enable_private_endpoints="True"
 expected_common_dns_resource_group_name="test_dns_resource_group_name"
 expected_common_resource_group_name="test_resource_group_name"
 expected_common_vnet_resource_group_name="test_vnet_resource_group_name="
@@ -86,7 +86,7 @@ This config settings overwrites input parameters.
 """
 mock_config_settings = {
     "project:prefix":expected_prefix,
-    "project:enable_private_endpoint":expected_enable_private_endpoint,
+    "project:enable_private_endpoints":expected_enable_private_endpoints,
     "project:common": expected_common_dump,
     "project:azureml": expected_azureml_dump
 }
@@ -111,7 +111,7 @@ def test_config():
     # Parameters for AzureML
     assert test_config.azureml_args.compute_instance_subnet_name == expected_compute_instance_subnet_name
     assert test_config.azureml_args.compute_cluster_subnet_name == expected_compute_cluster_subnet_name
-    assert test_config.azureml_args.enable_private_endpoint == True
+    assert test_config.azureml_args.enable_private_endpoints == True
     assert test_config.azureml_args.compute_cluster_config == expected_azureml_cluster_dump
     assert test_config.azureml_args.compute_instance_config == expected_azureml_instance_dump
 
@@ -174,23 +174,23 @@ def test_private_endpoint_invalid_config():
     with pytest.raises(ValueError):
         validate_private_endpoint_config(
             private_endpoint_subnet_name="", 
-            enable_private_endpoint=True,
+            enable_private_endpoints=True,
             dns_resource_group_name="foo")
     
     with pytest.raises(ValueError):
         validate_private_endpoint_config(
             private_endpoint_subnet_name="   ", 
-            enable_private_endpoint=True,
+            enable_private_endpoints=True,
             dns_resource_group_name="foo")
     
     with pytest.raises(ValueError):
         validate_private_endpoint_config(
             private_endpoint_subnet_name="foo", 
-            enable_private_endpoint=True,
+            enable_private_endpoints=True,
             dns_resource_group_name="")
 
     with pytest.raises(ValueError):
         validate_private_endpoint_config(
             private_endpoint_subnet_name="foo", 
-            enable_private_endpoint=True,
+            enable_private_endpoints=True,
             dns_resource_group_name="   ")
