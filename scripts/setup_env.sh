@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Test if python comand is available
 if type -a python3 >&2; then
