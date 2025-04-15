@@ -460,6 +460,40 @@ pulumi = ">=3.142.0,<4.0.0"
 semver = ">=2.8.1"
 
 [[package]]
+name = "pulumi-azuread"
+version = "6.4.0"
+description = "A Pulumi package for creating and managing Azure Active Directory (Azure AD) cloud resources."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "pulumi_azuread-6.4.0-py3-none-any.whl", hash = "sha256:2a30c4a43fa2cb8741b8cdb4832649c81af0b9c95e09c6273e65931a2794888b"},
+    {file = "pulumi_azuread-6.4.0.tar.gz", hash = "sha256:46698098c290fdec8e8214a08ef336977a60189d92c8e20449b644e4edb11738"},
+]
+
+[package.dependencies]
+parver = ">=0.2.1"
+pulumi = ">=3.142.0,<4.0.0"
+semver = ">=2.8.1"
+
+[[package]]
+name = "pulumi-random"
+version = "4.18.0"
+description = "A Pulumi package to safely use randomness in Pulumi programs."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "pulumi_random-4.18.0-py3-none-any.whl", hash = "sha256:420508895f20a4f7c54ea04c91ebb083a7726a2a6d9b697a485d869ab8c46044"},
+    {file = "pulumi_random-4.18.0.tar.gz", hash = "sha256:84862ecfff13ca97de87dc2b7dc14f79650e033a461c61a4ccdc76af4ed891f5"},
+]
+
+[package.dependencies]
+parver = ">=0.2.1"
+pulumi = ">=3.142.0,<4.0.0"
+semver = ">=2.8.1"
+
+[[package]]
 name = "pydantic"
 version = "2.10.6"
 description = "Data validation using Python type hints"
@@ -774,4 +808,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "d9a82f6850ffbc7db2ce4de844b66a0a3631bc32835ffb3bfc39b8ec9078dcba"
+content-hash = "2c37e02826d41a89539c3a29735512a04930cb821cda17f873b95c5c80b61e64"

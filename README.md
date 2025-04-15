@@ -10,7 +10,9 @@ In your Terminal,
 
 * Run `pulumi login <path/to/repo/root>` to use pulumi existing state file. For example:
 
-    `pulumi login file:///Users/axiong/learning/azenv-deploy`
+    `pulumi login file:///Users/axiong/learning/azenv-deploy`. 
+    
+    If you are already at repo root dir, you can just run `pulumi login`.
 
 * Create or change a dir for pulumi stacks
 
