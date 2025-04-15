@@ -96,6 +96,7 @@ class AzureMLArgs:
 
 class AzureML(ComponentResource):
     """Pulumi Component for Azure ML Workspace and associated resources"""
+    # pylint: disable=too-many-locals
     def __init__(
         self,
         name: str,
@@ -247,7 +248,7 @@ class AzureML(ComponentResource):
                 opts=child_opts
             )
 
-        # 9. Create compute clusters        
+        # 9. Create compute clusters
         for cluster_name, cluster_config in args.compute_cluster_config.items():
             mls.Compute(
                 cluster_name,
@@ -276,6 +277,7 @@ class AzureML(ComponentResource):
                         scale_settings=mls.ScaleSettingsArgs(
                             max_node_count=cluster_config['max_node_count'],
                             min_node_count=cluster_config['min_node_count'],
+                            # pylint: disable=line-too-long
                             node_idle_time_before_scale_down=cluster_config['node_idle_time_before_scale_down']
                         ),
                         subnet=mls.ResourceIdArgs(id=pe_subnet_id),
