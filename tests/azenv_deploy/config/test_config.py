@@ -1,7 +1,6 @@
 """
 Unit test for config.py
 """
-
 import json
 from os import environ
 from typing import Dict
@@ -68,11 +67,7 @@ expected_azureml_cluster_dump = {"comp-cluster-01": {
             }}
 expected_azureml_instance_dump = {"comp-inst-ax01": {
                 "user_email": "test@123.com",
-                "vm_size": "Standard_DS12_v2",
-                "auto_pause": {
-                    "enabled": True,
-                    "delay_in_minutes": 20
-                }
+                "vm_size": "Standard_DS12_v2"
             }}
 expected_azureml_dump = json.dumps({
         "compute_instance_subnet_name": expected_compute_instance_subnet_name,
@@ -179,18 +174,18 @@ def test_private_endpoint_invalid_config():
     
     with pytest.raises(ValueError):
         validate_private_endpoint_config(
-            private_endpoint_subnet_name="   ", 
+            private_endpoint_subnet_name="   ",
             enable_private_endpoints=True,
             dns_resource_group_name="foo")
     
     with pytest.raises(ValueError):
         validate_private_endpoint_config(
-            private_endpoint_subnet_name="foo", 
+            private_endpoint_subnet_name="foo",
             enable_private_endpoints=True,
             dns_resource_group_name="")
 
     with pytest.raises(ValueError):
         validate_private_endpoint_config(
-            private_endpoint_subnet_name="foo", 
+            private_endpoint_subnet_name="foo",
             enable_private_endpoints=True,
             dns_resource_group_name="   ")

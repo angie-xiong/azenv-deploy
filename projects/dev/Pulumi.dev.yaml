@@ -1,7 +1,7 @@
 encryptionsalt: v1:vDB9gMHira0=:v1:BN7AUpFGvH3nRSM3:+LBWJiHSrc3vwILNNLMuGU4Zn/WeOQ==
 config:
   dev:prefix: axtest01
-  dev:enable_private_endpoints: "false"
+  dev:enable_private_endpoints: "true"
   dev:common:
     dns_resource_group_name: aiadhub-dev-eastus-cloudsvc
     resource_group_name: "rgn"
@@ -20,8 +20,5 @@ config:
         vm_size: Standard_DS11_v2
     compute_instance_config:
       comp-inst-ax01:
-        auto_pause:
-          delay_in_minutes: 20
-          enabled: true
         user_email: angie.xiong0627@gmail.com
         vm_size: Standard_DS12_v2
